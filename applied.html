@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Database</title>
+  <link rel="stylesheet" href="commonStyles.css" />
+</head>
+
+<body>
+  <div id="links">
+    <div><a href="index.html">Home</a></div>
+    <div><a href="applied.html">Applied Jobs</a></div>
+    <div><a href="bookmark.html">Bookmarks</a></div>
+  </div>
+
+
+  <select id="sortName">
+    <option value="">Sort by name</option>
+    <option value="asc">Ascending</option>
+    <option value="dsc">Descending</option>
+  </select>
+
+
+
+  <select name="" id="sortSalary">
+    <option value="">Sort by salary</option>
+
+    <option value="HTL">High to Low</option>
+    <option value="LTH">Low to high</option>
+  </select>
+
+
+  <select name="" id="filterRole">
+    <option value="fsd">Full Stack Developer</option>
+    <option value="frontened">Frontened</option>
+    <option value="backened">Backened</option>
+  </select>
+
+
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Job applied</th>
+          <th>Salary expected</th>
+          <th>Add to bookmark</th>
+        </tr>
+      </thead>
+      <tbody id="body">
+        <!-- Append your output to tbody -->
+      </tbody>
+    </table>
+  </main>
+</body>
+<script>
+  //you need to code here
+  var jobArr = JSON.parse(localStorage.getItem("jobList"))
+  var bookmarkArr = JSON.parse(localStorage.getItem("bookmark")) || []
+
+  displayData(jobArr)
+
+  function displayData(elem) {
+    document.querySelector("tbody").innerHTML = ""
+
+    jobArr.forEach(function (elem) {
+      var tr = document.createElement("tr")
+
+      var td1 = document.createElement("td")
+      td1.innerText = elem.personName
+
+      var td2 = document.createElement("td")
+      td2.innerText = elem.personEmail
+
+
+      var td3 = document.createElement("td")
+      td3.innerText = elem.personRole
+
+      var td4 = document.createElement("td")
+      td4.innerText = elem.personSalary
+
+      var td5 = document.createElement("td")
+      td5.innerText = "Bookmark"
+      td5.style.color = "green"
+      td5.style.cursor = "pointer"
+
+      td5.addEventListener("click", function () {
+        bookmarkFun(elem)
+      })
+
+
+      tr.append(td1, td2, td3, td4, td5)
+
+      document.querySelector("tbody").append(tr)
+
+    })
+
+    function bookmarkFun(elem) {
+      bookmarkArr.push(elem)
+      localStorage.setItem("bookmarks", JSON.stringify(bookmarkArr))
+    }
+
+
+
+
+  }
+
+
+
+
+
+  // Sort Data by names
+
+
+  document.querySelector("#sortName").addEventListener("change", sortName)
+
+  function sortName() {
+    var selected = document.querySelector("#sortName").value
+
+    if (selected == "asc") {
+      jobArr.sort(function (a, b) {
+        var x = a.personName.toUpperCase()
+        var y = b.personName.toUpperCase()
+
+        if (x > y) {
+          return 1
+        } else if (x < y) {
+          return -1
+        } else {
+          0
+        }
+
+      })
+    }
+
+    if (selected == "dsc") {
+      jobArr.sort(function (a, b) {
+        var x = a.personName.toUpperCase()
+        var y = b.personName.toUpperCase()
+
+        if (x > y) {
+          return -1
+        } else if (x < y) {
+          return 1
+        } else {
+          0
+        }
+
+      })
+    }
+
+    displayData(jobArr)
+  }
+
+
+
+
+
+  // Sort by salary
+
+  document.querySelector("#sortSalary").addEventListener("change", handleSalary)
+
+  function handleSalary() {
+    jobArr.sort(function (a, b) {
+      selected = document.querySelector("#sortSalary").value
+
+      if (selected == "HTL") {
+        return b.personSalary - a.personSalary
+      }
+      if(selected=='LTH')
+      {
+        return a.personSalary-b.personSalary
+      }
+    })
+    displayData(jobArr)
+  }
+
+
+
+
+  document.querySelector("#filterRole").addEventListener("change", handleRole)
+  
+  function handleRole()
+  {
+    var selected= document.querySelector("#filterRole").value
+    // console.log(selected)
+    var filterlist= jobArr.filter(function(elem){
+      return elem.personRole == selected
+    })
+    displayData(filterlist)
+  }
+
+
+
+
+
+
+</script>
+
+</html>
